@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "quantum-portfolio"
+version = "0.1.0"
+description = ""
+authors = ["AleksanderWWW <alwojnarowicz@gmail.com>"]
+readme = "README.md"
+packages = [{include = "quantum_portfolio"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["standard"], version = "^0.112.0"}
+dwave-networkx = "^0.8.15"
+dwave-system = "^1.25.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
