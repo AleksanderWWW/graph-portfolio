@@ -10,6 +10,11 @@ class QueryDataDTO:
     tickers: Optional[list[str]] = None
     index: Optional[str] = None
 
-    def __post_init__(self) -> None:
-        if self.start > self.end:
-            raise ValueError("Start date must be before end date")
+
+@dataclass
+class ResponseDTO:
+    tickers: list[str]
+    execution_time_seconds: int
+    annealer_run_time_seconds: int
+    is_independent_set: bool
+    errors: Optional[list[str]] = None

@@ -1,13 +1,14 @@
 import abc
 import datetime as dt
 from concurrent.futures import ThreadPoolExecutor as Executor
+from typing import Optional
 
 import pandas as pd
 import pandas_datareader as pdr
 
 from pytickersymbols import PyTickerSymbols
 
-from src.quantum_portfolio.model.dtos import QueryDataDTO
+from quantum_portfolio.model.dtos import QueryDataDTO
 
 
 TICKER_PROVIDER = "yahoo"
@@ -20,16 +21,30 @@ class DataReader(abc.ABC):
 
 
 class MockReader(DataReader):
-    def __init__(self):
+    @property
+    def param_ticker_data(self) -> dict[str, list[float]]:
+        return {
+                "Param-ticker-1": [1, 2, 3, 4, 5],
+                "Param-ticker-2": [5, 4, 3, 2, 1],
+        }
+
+    @property
+    def index_ticker_data(self) -> dict[str, list[float]]:
+        return {
+            "Index-ticker-1": [1, 2, 3, 4, 5],
+            "Index-ticker-2": [5, 4, 3, 2, 1],
+        }
+
+    def __init__(self) -> None:
         self._data = pd.DataFrame(
             {
-                "AAPL": [1, 2, 3, 4, 5],
-                "MSFT": [5, 4, 3, 2, 1]
+                **self.param_ticker_data,
+                **self.index_ticker_data,
             }
         )
 
     def get_data(self, tickers: list, start: dt.date, end: dt.date) -> pd.DataFrame:
-        return self._data[tickers]
+        return self._data.loc[:, tickers]
 
 
 class Scraper:
@@ -38,15 +53,18 @@ class Scraper:
         self._query_data = query_data
 
         self._all_dfs: list[pd.DataFrame] = []
-        self.data: pd.DataFrame = pd.DataFrame()
+        self.data: Optional[pd.DataFrame] = None
 
-    def scrape_data(self) -> None:
+    def scrape_data(self, sort: bool = True) -> None:
         if self._query_data.tickers is None and self._query_data.index is None:
             return
 
         tickers = self._resolve_tickers()
 
         self.data = self._reader.get_data(tickers, self._query_data.start, self._query_data.end)
+
+        if sort:
+            self.data = self.data.reindex(sorted(self.data.columns), axis=1)
 
     def _resolve_tickers(self) -> list[str]:
         tickers: set[str] = set()
