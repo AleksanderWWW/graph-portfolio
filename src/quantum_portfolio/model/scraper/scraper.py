@@ -1,50 +1,11 @@
-import abc
-import datetime as dt
-from concurrent.futures import ThreadPoolExecutor as Executor
 from typing import Optional
 
 import pandas as pd
-import pandas_datareader as pdr
 
 from pytickersymbols import PyTickerSymbols
 
-from quantum_portfolio.model.dtos import QueryDataDTO
-
-
-TICKER_PROVIDER = "yahoo"
-
-
-class DataReader(abc.ABC):
-    @abc.abstractmethod
-    def get_data(self, tickers: list, start: dt.date, end: dt.date) -> pd.DataFrame:
-        pass
-
-
-class MockReader(DataReader):
-    @property
-    def param_ticker_data(self) -> dict[str, list[float]]:
-        return {
-                "Param-ticker-1": [1, 2, 3, 4, 5],
-                "Param-ticker-2": [5, 4, 3, 2, 1],
-        }
-
-    @property
-    def index_ticker_data(self) -> dict[str, list[float]]:
-        return {
-            "Index-ticker-1": [1, 2, 3, 4, 5],
-            "Index-ticker-2": [5, 4, 3, 2, 1],
-        }
-
-    def __init__(self) -> None:
-        self._data = pd.DataFrame(
-            {
-                **self.param_ticker_data,
-                **self.index_ticker_data,
-            }
-        )
-
-    def get_data(self, tickers: list, start: dt.date, end: dt.date) -> pd.DataFrame:
-        return self._data.loc[:, tickers]
+from quantum_portfolio.model.scraper.dtos import QueryDataDTO
+from quantum_portfolio.model.scraper.readers.abstract import DataReader
 
 
 class Scraper:

@@ -3,8 +3,9 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from quantum_portfolio.model.scraper import Scraper, MockReader
-from quantum_portfolio.model.dtos import QueryDataDTO
+from quantum_portfolio.model.scraper.scraper import Scraper
+from quantum_portfolio.model.scraper.readers.mock_reader import MockReader
+from quantum_portfolio.model.scraper.dtos import QueryDataDTO
 
 
 @pytest.fixture
@@ -32,7 +33,7 @@ def test_scraper_tickers_and_index(mock_reader) -> None:
                       )
 
     with patch(
-            "quantum_portfolio.model.scraper.pull_tickers", return_value=["Index-ticker-1", "Index-ticker-2"]
+            "quantum_portfolio.model.scraper.scraper.pull_tickers", return_value=["Index-ticker-1", "Index-ticker-2"]
     ) as mock_pull_tickets:
         scraper.scrape_data()
 
@@ -50,7 +51,7 @@ def test_scraper_tickers_and_index(mock_reader) -> None:
         assert mock_pull_tickets.called_once_with("DOW")
 
 
-@patch("quantum_portfolio.model.scraper.pull_tickers", return_value=["ticker-1", "ticker-2"])
+@patch("quantum_portfolio.model.scraper.scraper.pull_tickers", return_value=["ticker-1", "ticker-2"])
 def test_resolve_tickers(mock_pull_tickets) -> None:
     scraper = Scraper(MockReader(), QueryDataDTO(
         start='2021-01-01', end='2021-01-10', tickers=['AAPL', 'MSFT'], index="DOW",
