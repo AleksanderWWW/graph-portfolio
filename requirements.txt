@@ -1,0 +1,6 @@
+fastapi[standard]==0.112.0
+dwave-networkx==0.8.15
+dwave-system==1.25.0
+pytickersymbols==1.15.0
+pandas==2.2.2
+pandas-datareader==0.10.0
