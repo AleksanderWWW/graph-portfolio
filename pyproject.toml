@@ -1,24 +1,29 @@
-[tool.poetry]
-name = "quantum-portfolio"
+[project]
+name = "quantum-portfolio-faas"
+
 version = "0.1.0"
-description = ""
-authors = ["AleksanderWWW <alwojnarowicz@gmail.com>"]
+
+description = "Add your description here"
+
 readme = "README.md"
-packages = [{include = "quantum_portfolio", from = "src"}]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = {extras = ["standard"], version = "^0.112.0"}
-dwave-networkx = "^0.8.15"
-dwave-system = "^1.25.0"
-pytickersymbols = "^1.15.0"
-pandas = "^2.2.2"
-pandas-datareader = "^0.10.0"
+requires-python = ">=3.10"
 
-# dev
-pytest = { version = "^8.3.2", optional = true }
 
+dependencies = [
+    "aiohttp>=3.11.11",
+    "beautifulsoup4>=4.13.3",
+    "pandas>=2.2.3",
+    "requests>=2.32.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "isort>=6.0.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.4",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
