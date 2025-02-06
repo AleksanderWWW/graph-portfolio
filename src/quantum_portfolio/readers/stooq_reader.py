@@ -74,12 +74,4 @@ async def read_single_ticker(session: aiohttp.ClientSession, url: str, ticker: s
         text = await response.text()
 
     data = pd.read_csv(StringIO(text), index_col=INDEX_COLUMN_NAME)
-    return data[[RETURN_COLUMNS_NAME]].rename(columns={RETURN_COLUMNS_NAME: ticker})
-
-
-if __name__ == "__main__":
-        data = read_stooq(
-        ["ale", "pko"], start_date=datetime.date(2025, 1, 12), end_date=datetime.date(2025, 2, 5)
-        )
-
-        print(data)
+    return data[[RETURN_COLUMNS_NAME]].rename(columns={RETURN_COLUMNS_NAME: ticker})    

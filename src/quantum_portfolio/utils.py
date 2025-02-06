@@ -1,15 +1,10 @@
-import dataclasses
-from typing import Iterable
+from typing import NamedTuple
 
 
-@dataclasses.dataclass
-class URLComponents:
+class URLComponents(NamedTuple):
     scheme: str
     netloc: str
     url: str
     path: str
     query: str
     fragment: str
-
-    def __iter__(self) -> Iterable:
-        return iter([getattr(self, field.name) for field in dataclasses.fields(self)])
