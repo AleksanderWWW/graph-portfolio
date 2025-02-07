@@ -1,18 +1,17 @@
 from typing import Any
 
 import litserve as ls
-
 from fastapi import HTTPException
 
-from quantum_portfolio.schema import QueryData, Result, RequestData, ResponseData
-from quantum_portfolio.stooq_reader import read_stooq, DataNotFound
-from quantum_portfolio.graph import get_max_diversified_portfolio
+from graph_portfolio.graph import get_max_diversified_portfolio
+from graph_portfolio.schema import QueryData, RequestData, ResponseData, Result
+from graph_portfolio.stooq_reader import DataNotFound, read_stooq
 
 
 class SimpleLitAPI(ls.LitAPI):
     def setup(self, device: str) -> Any:
         return super().setup(device)
-    
+
     def decode_request(self, request: RequestData) -> QueryData:
         return request.data
 
