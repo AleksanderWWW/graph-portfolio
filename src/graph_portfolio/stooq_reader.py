@@ -8,8 +8,8 @@ from urllib.parse import urlencode, urlunparse
 import aiohttp
 import pandas as pd
 
-from quantum_portfolio.schema import Date
-from quantum_portfolio.utils import URLComponents
+from graph_portfolio.schema import Date
+from graph_portfolio.utils import URLComponents
 
 
 class DataNotFound(Exception):
