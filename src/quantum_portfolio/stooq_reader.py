@@ -8,7 +8,13 @@ from urllib.parse import urlencode, urlunparse
 import aiohttp
 import pandas as pd
 
+from quantum_portfolio.schema import Date
 from quantum_portfolio.utils import URLComponents
+
+
+class DataNotFound(Exception):
+    def __init__(self, ticker: str, url: str) -> None:
+        self.msg = f"No data found for ticker '{ticker}' [URL: {url}]"
 
 
 class StooqDataInterval(Enum):
@@ -29,10 +35,22 @@ RETURN_COLUMNS_NAME: str = "Zamkniecie"
 
 
 def read_stooq(
-    tickers: list[str], *, start_date: datetime.date, end_date: datetime.date
+    tickers: list[str], *, start_date: Date, end_date: Date
 ) -> pd.DataFrame:
     return asyncio.run(
-        read_stooq_data(tickers, start_date=start_date, end_date=end_date)
+        read_stooq_data(
+            tickers,
+            start_date=datetime.date(
+                year=start_date.year,
+                month=start_date.month,
+                day=start_date.day,
+            ),
+            end_date=datetime.date(
+                year=end_date.year,
+                month=end_date.month,
+                day=end_date.day,
+            ),
+        )
     )
 
 
@@ -79,6 +97,6 @@ async def read_single_ticker(
         text = await response.text()
 
     if INDEX_COLUMN_NAME not in text:
-        raise ValueError(f"No data found for ticker '{ticker}' [URL: {url}]")
+        raise DataNotFound(ticker, url)
     data = pd.read_csv(StringIO(text), index_col=INDEX_COLUMN_NAME)
     return data[[RETURN_COLUMNS_NAME]].rename(columns={RETURN_COLUMNS_NAME: ticker})
