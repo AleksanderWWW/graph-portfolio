@@ -1,0 +1,6 @@
+aiohttp==3.11.11
+beautifulsoup4==4.13.3
+litserve==0.2.6
+networkx==3.4.2
+pandas==2.2.3
+requests==2.32.3
