@@ -34,9 +34,7 @@ INDEX_COLUMN_NAME: str = "Data"
 RETURN_COLUMNS_NAME: str = "Zamkniecie"
 
 
-def read_stooq(
-    tickers: list[str], *, start_date: Date, end_date: Date
-) -> pd.DataFrame:
+def read_stooq(tickers: list[str], *, start_date: Date, end_date: Date) -> pd.DataFrame:
     return asyncio.run(
         read_stooq_data(
             tickers,

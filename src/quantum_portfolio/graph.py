@@ -10,7 +10,9 @@ class PortfolioResult(NamedTuple):
     is_independent_set: bool
 
 
-def get_max_diversified_portfolio(data: pd.DataFrame, corr_threshold) -> PortfolioResult:
+def get_max_diversified_portfolio(
+    data: pd.DataFrame, corr_threshold
+) -> PortfolioResult:
     corr_matrix = get_corr_matrix(data)
     label_mapping = {i: name for i, name in enumerate(corr_matrix.columns)}
 
