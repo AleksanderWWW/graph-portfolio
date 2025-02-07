@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+import datetime
+
+from pydantic import BaseModel, conlist, model_validator
 
 
 class Date(BaseModel):
@@ -10,8 +12,19 @@ class Date(BaseModel):
 class QueryData(BaseModel):
     start: Date
     end: Date
-    tickers: list[str]
+    tickers: conlist(str, min_length=1)
     corr_threshold: float = 0.5
+
+    @model_validator(mode="after")
+    def validate_model(self) -> None:
+        start_date = datetime.date(self.start.year, self.start.month, self.start.day)
+        end_date = datetime.date(self.end.year, self.end.month, self.end.day)
+
+        if start_date >= end_date:
+            raise ValueError("Start date must be before end date")
+
+        if self.corr_threshold <= 0 or self.corr_threshold >= 1:
+            raise ValueError("Correlation threshold must be a float in (0, 1)")
 
 
 class RequestData(BaseModel):
