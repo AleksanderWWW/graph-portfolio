@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ inputs.working_directory }}
         run: |
-          uv pip install --system -r pyproject.toml --extra all --extra dev .
+          uv pip install --system -r pyproject.toml --extra dev .
         shell: bash
 
       - name: Test
