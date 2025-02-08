@@ -29,6 +29,6 @@ jobs:
         uses: ./.github/actions/build
 
       - name: Test
-        run: |
-          pytest -v -m integration tests/
-        shell: bash
+        uses: ./.github/actions/test
+        with:
+          mark: 'integration'

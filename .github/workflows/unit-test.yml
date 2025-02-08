@@ -29,6 +29,6 @@ jobs:
         uses: ./.github/actions/build
 
       - name: Test
-        run: |
-          pytest -v -m unit tests/
-        shell: bash
+        uses: ./.github/actions/test
+        with:
+          mark: 'unit'

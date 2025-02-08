@@ -29,6 +29,6 @@ jobs:
         uses: ./.github/actions/build
 
       - name: Test
-        run: |
-          pytest -v -m e2e tests/
-        shell: bash
+        uses: ./.github/actions/test
+        with:
+          mark: 'e2e'
