@@ -25,7 +25,7 @@ def resolve_tickers(tickers: list[str]) -> list[str]:
                 resolved_tickers.append(ticker_name)
             case ["index", index, expected_len]:
                 resolved_tickers += get_index_components(
-                    index, expected_len=expected_len
+                    index, expected_len=int(expected_len)
                 )
             case ["index", index]:
                 resolved_tickers += get_index_components(index)
