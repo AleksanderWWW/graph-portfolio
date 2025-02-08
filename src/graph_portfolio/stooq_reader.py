@@ -72,13 +72,22 @@ async def read_stooq_data(
         )
         for ticker in tickers
     ]
-
+    batch_size = 10
+    delay = 2
     async with aiohttp.ClientSession() as session:
-        tasks = [
-            read_single_ticker(session, url, ticker)
-            for url, ticker in zip(urls, tickers)
-        ]
-        results = await asyncio.gather(*tasks)
+        results = []
+
+        for i in range(0, len(urls), batch_size):
+            batch = [
+                read_single_ticker(session, url, ticker)
+                for url, ticker in zip(
+                    urls[i : i + batch_size], tickers[i : i + batch_size]
+                )
+            ]
+            results.extend(await asyncio.gather(*batch))
+
+            if i + batch_size < len(urls):  # Avoid sleeping after the last batch
+                await asyncio.sleep(delay)
 
     return pd.concat(results, axis=1)
 
