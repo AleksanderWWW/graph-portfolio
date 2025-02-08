@@ -18,13 +18,11 @@ RUN pip install -r requirements.txt
 
 # Copy remaining files - neccesary to build and run
 COPY pyproject.toml README.md ./
-ADD src src
+COPY src src
 
 # Install graph_portfolio package
-RUN pip install .
-
 # Change ownership of the working directory & switch to non-root user
-RUN chown -R appuser:appgroup /app
+RUN pip install . && chown -R appuser:appgroup /app
 USER appuser
 
 # Entrypoint - litserve server
