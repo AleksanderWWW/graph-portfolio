@@ -19,7 +19,7 @@ jobs:
 
       - name: Docker Lint
         run: |
-          docker run --rm -it hadolint/hadolint:v2.12.0 hadolint - < Dockerfile
+          docker run --rm -i hadolint/hadolint:v2.12.0 hadolint - < Dockerfile
         shell: bash
 
       - name: Docker Build
