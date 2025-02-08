@@ -10,11 +10,7 @@ import pandas as pd
 
 from graph_portfolio.schema import Date
 from graph_portfolio.utils import URLComponents
-
-
-class DataNotFound(Exception):
-    def __init__(self, ticker: str, url: str) -> None:
-        self.msg = f"No data found for ticker '{ticker}' [URL: {url}]"
+from graph_portfolio.exceptions import DataNotFound
 
 
 class StooqDataInterval(Enum):
