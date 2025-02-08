@@ -11,6 +11,7 @@ from graph_portfolio.schema import (
 )
 
 
+@pytest.mark.unit
 class TestQueryDataModel:
     def test_invalid_dates(self):
         with pytest.raises(ValueError):
@@ -46,6 +47,7 @@ class TestQueryDataModel:
         )
 
 
+@pytest.mark.integration
 def test_path_from_query_to_response():
     query_data = QueryData(
         start=Date(day=7, month=7, year=2023),

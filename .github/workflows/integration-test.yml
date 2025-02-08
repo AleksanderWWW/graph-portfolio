@@ -1,4 +1,4 @@
-name: unit-tests
+name: integration-tests
 
 on:
   pull_request:
@@ -12,12 +12,12 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  unittests:
+  integrationtests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.10", "3.12" ]
+        python-version: [ "3.12" ]
     steps:
       - uses: actions/checkout@v4
 
@@ -37,5 +37,5 @@ jobs:
 
       - name: Test
         run: |
-          pytest -v -m unit tests/
+          pytest -v -m integration tests/
         shell: bash

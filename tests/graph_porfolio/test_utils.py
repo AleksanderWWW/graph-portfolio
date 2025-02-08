@@ -1,8 +1,11 @@
 from urllib.parse import urlencode, urlunparse
 
+import pytest
+
 from graph_portfolio.utils import URLComponents
 
 
+@pytest.mark.unit
 def test_create_url_from_components():
     components = URLComponents(
         scheme="https",

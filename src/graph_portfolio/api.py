@@ -8,7 +8,7 @@ from graph_portfolio.schema import QueryData, RequestData, ResponseData, Result
 from graph_portfolio.stooq_reader import DataNotFound, read_stooq
 
 
-class SimpleLitAPI(ls.LitAPI):
+class GraphPortfolioAPI(ls.LitAPI):
     def setup(self, device: str) -> Any:
         return super().setup(device)
 
@@ -42,6 +42,6 @@ class SimpleLitAPI(ls.LitAPI):
 
 
 if __name__ == "__main__":
-    api = SimpleLitAPI()
+    api = GraphPortfolioAPI()
     server = ls.LitServer(api, track_requests=True)
     server.run(port=8000)

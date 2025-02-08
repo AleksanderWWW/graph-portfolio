@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from typing import NamedTuple
 
 import networkx as nx
@@ -22,7 +23,7 @@ def get_max_diversified_portfolio(
 
     is_ind = is_independent_set(graph, max_ind)
 
-    assets = set(label_mapping[label] for label in max_ind)
+    assets = [label_mapping[label] for label in max_ind]
 
     return PortfolioResult(
         assets=list(assets),
@@ -40,5 +41,5 @@ def get_corr_matrix(data: pd.DataFrame) -> pd.DataFrame:
     return data.pct_change().corr()
 
 
-def is_independent_set(graph: nx.Graph, chosen_nodes: set[str]) -> bool:
+def is_independent_set(graph: nx.Graph, chosen_nodes: Iterable[str]) -> bool:
     return len(graph.subgraph(chosen_nodes).edges) == 0
