@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Docker Lint
+        run: |
+          docker run --rm -it hadolint/hadolint:v2.12.0 hadolint - < Dockerfile
+        shell: bash
+
       - name: Docker Build
         run: |
           docker build -t test:latest .
