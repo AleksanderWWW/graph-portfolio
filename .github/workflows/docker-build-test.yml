@@ -1,0 +1,23 @@
+name: docker-build-tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  docker-build-tests:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: |
+          docker build -t test:latest .
+        shell: bash
