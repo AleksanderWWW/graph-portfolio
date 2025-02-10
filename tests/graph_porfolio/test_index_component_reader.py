@@ -25,7 +25,30 @@ def test_resolve_tickers_mocked(mock_get_components: Mock):
     assert resolved == ["ale", "alr", "bdx", "cdr", "xtb"]
 
 
-@pytest.mark.intergation
+@pytest.mark.unit
+@patch("graph_portfolio.index_component_reader.get_index_components")
+def test_resolve_tickers_mocked_invalid_input(mock_get_components: Mock):
+    tickers = ["funkyindex:wig20:20"]
+
+    with pytest.raises(ValueError):
+        resolve_tickers(tickers)
+
+    mock_get_components.assert_not_called()
+
+
+@pytest.mark.unit
+@patch("graph_portfolio.index_component_reader.get_index_components")
+def test_resolve_tickers_mocked_not_asking_for_index(mock_get_components: Mock):
+    tickers = ["xtb", "pko"]
+
+    resolved = resolve_tickers(tickers)
+
+    mock_get_components.assert_not_called()
+
+    assert resolved == ["xtb", "pko"]
+
+
+@pytest.mark.integration
 def test_resolve_tickers():
     tickers = ["index:wig20", "xtb", "index:wig30"]
 

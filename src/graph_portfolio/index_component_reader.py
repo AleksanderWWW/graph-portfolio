@@ -1,5 +1,6 @@
 import warnings
 from io import StringIO
+from typing import Final
 
 import requests
 
@@ -8,11 +9,11 @@ import pandas as pd
 from graph_portfolio.exceptions import DataNotFound
 
 
-URL: str = "https://www.biznesradar.pl/gielda/indeks:{index}"
+URL: Final[str] = "https://www.biznesradar.pl/gielda/indeks:{index}"
 
-TEXT_IN_INVALID_RESPONSE: str = "Błąd 404"
+TEXT_IN_INVALID_RESPONSE: Final[str] = "Błąd 404"
 
-COLUMN_WITH_TICKER_NAMES: str = "Profil"
+COLUMN_WITH_TICKER_NAMES: Final[str] = "Profil"
 
 
 def resolve_tickers(tickers: list[str]) -> list[str]:

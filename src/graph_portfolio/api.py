@@ -26,6 +26,8 @@ class GraphPortfolioAPI(ls.LitAPI):
             )
         except DataNotFound as not_found_exc:
             raise HTTPException(404, detail=not_found_exc.msg)
+        except ValueError as invalid_value_exc:
+            raise HTTPException(400, detail=str(invalid_value_exc))
         except Exception as generic_exc:
             raise HTTPException(500, detail=str(generic_exc))
 
