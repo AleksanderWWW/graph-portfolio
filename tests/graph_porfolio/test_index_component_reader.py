@@ -22,7 +22,7 @@ def test_resolve_tickers_mocked(mock_get_components: Mock):
 
     mock_get_components.assert_called_once_with("wig20", expected_len=20)
 
-    assert resolved == ["ale", "alr", "bdx", "cdr", "xtb"]
+    assert sorted(resolved) == sorted(["ale", "alr", "bdx", "cdr", "xtb"])
 
 
 @pytest.mark.unit
@@ -45,15 +45,33 @@ def test_resolve_tickers_mocked_not_asking_for_index(mock_get_components: Mock):
 
     mock_get_components.assert_not_called()
 
-    assert resolved == ["xtb", "pko"]
+    assert sorted(resolved) == sorted(["xtb", "pko"])
+
+
+@pytest.mark.unit
+@patch(
+    "graph_portfolio.index_component_reader.get_index_components",
+    return_value=[
+        "ale",
+        "alr",
+        "bdx",
+        "cdr",
+    ],
+)
+def test_resolve_tickers_mocked_returns_unique_tickers(mock_get_components: Mock):
+    tickers = ["index:wig20", "ale", "bdx"]
+
+    resolved = resolve_tickers(tickers)
+
+    assert len(resolved) == 4  # only unique tickers
 
 
 @pytest.mark.integration
 def test_resolve_tickers():
-    tickers = ["index:wig20", "xtb", "index:wig30"]
+    tickers = ["index:wig20", "test_ticker", "index:wig30"]
 
     resolved = resolve_tickers(tickers)
 
-    assert len(resolved) == 51
+    assert len(resolved) == 31
 
-    assert "xtb" in resolved
+    assert "test_ticker" in resolved

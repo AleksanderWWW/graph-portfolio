@@ -33,7 +33,7 @@ def resolve_tickers(tickers: list[str]) -> list[str]:
             case _:
                 raise ValueError(f"Invalid item in the ticker list: {ticker}")
 
-    return resolved_tickers
+    return list(set(resolved_tickers))
 
 
 def get_index_components(index: str, *, expected_len: int | None = None) -> list[str]:
