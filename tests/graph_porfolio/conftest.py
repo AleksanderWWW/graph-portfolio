@@ -29,7 +29,7 @@ def request_data() -> dict[str, Any]:
                 "month": 7,
                 "year": 2024,
             },
-            "tickers": ["alr", "pko", "ale", "kgh", "peo", "pkn"],
+            "tickers": ["index:wig20", "index:wig30"],
             "corr_threshold": 0.3,
         }
     }

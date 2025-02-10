@@ -1,4 +1,4 @@
-name: unit-tests
+name: unit-integration-tests
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  unittests:
+  unit-integration-tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,7 +28,12 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
 
-      - name: Test
+      - name: Unit Tests
         uses: ./.github/actions/test
         with:
           mark: 'unit'
+
+      - name: Integration Tests
+        uses: ./.github/actions/test
+        with:
+          mark: 'integration'

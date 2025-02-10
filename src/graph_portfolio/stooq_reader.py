@@ -4,17 +4,14 @@ import os
 from enum import Enum
 from io import StringIO
 from urllib.parse import urlencode, urlunparse
+from typing import Final
 
 import aiohttp
 import pandas as pd
 
 from graph_portfolio.schema import Date
 from graph_portfolio.utils import URLComponents
-
-
-class DataNotFound(Exception):
-    def __init__(self, ticker: str, url: str) -> None:
-        self.msg = f"No data found for ticker '{ticker}' [URL: {url}]"
+from graph_portfolio.exceptions import DataNotFound
 
 
 class StooqDataInterval(Enum):
@@ -25,13 +22,13 @@ class StooqDataInterval(Enum):
     YEARLY = "y"
 
 
-SCHEME: str = "https"
-HOST: str = "stooq.pl"
+SCHEME: Final[str] = "https"
+HOST: Final[str] = "stooq.pl"
 
-DATE_FORMAT: str = "%Y%m%d"
+DATE_FORMAT: Final[str] = "%Y%m%d"
 
-INDEX_COLUMN_NAME: str = "Data"
-RETURN_COLUMNS_NAME: str = "Zamkniecie"
+INDEX_COLUMN_NAME: Final[str] = "Data"
+RETURN_COLUMNS_NAME: Final[str] = "Zamkniecie"
 
 
 def read_stooq(tickers: list[str], *, start_date: Date, end_date: Date) -> pd.DataFrame:
@@ -76,13 +73,22 @@ async def read_stooq_data(
         )
         for ticker in tickers
     ]
-
+    batch_size = 10
+    delay = 2
     async with aiohttp.ClientSession() as session:
-        tasks = [
-            read_single_ticker(session, url, ticker)
-            for url, ticker in zip(urls, tickers)
-        ]
-        results = await asyncio.gather(*tasks)
+        results = []
+
+        for i in range(0, len(urls), batch_size):
+            batch = [
+                read_single_ticker(session, url, ticker)
+                for url, ticker in zip(
+                    urls[i : i + batch_size], tickers[i : i + batch_size]
+                )
+            ]
+            results.extend(await asyncio.gather(*batch))
+
+            if i + batch_size < len(urls):  # Avoid sleeping after the last batch
+                await asyncio.sleep(delay)
 
     return pd.concat(results, axis=1)
 

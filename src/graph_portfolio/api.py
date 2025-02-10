@@ -5,7 +5,9 @@ from fastapi import HTTPException
 
 from graph_portfolio.graph import get_max_diversified_portfolio
 from graph_portfolio.schema import QueryData, RequestData, ResponseData, Result
-from graph_portfolio.stooq_reader import DataNotFound, read_stooq
+from graph_portfolio.stooq_reader import read_stooq
+from graph_portfolio.index_component_reader import resolve_tickers
+from graph_portfolio.exceptions import DataNotFound
 
 
 class GraphPortfolioAPI(ls.LitAPI):
@@ -18,12 +20,14 @@ class GraphPortfolioAPI(ls.LitAPI):
     def predict(self, query: QueryData) -> Result:
         try:
             data = read_stooq(
-                tickers=query.tickers,
+                tickers=resolve_tickers(query.tickers),
                 start_date=query.start,
                 end_date=query.end,
             )
         except DataNotFound as not_found_exc:
             raise HTTPException(404, detail=not_found_exc.msg)
+        except ValueError as invalid_value_exc:
+            raise HTTPException(400, detail=str(invalid_value_exc))
         except Exception as generic_exc:
             raise HTTPException(500, detail=str(generic_exc))
 
