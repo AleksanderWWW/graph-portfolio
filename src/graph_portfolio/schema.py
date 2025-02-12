@@ -13,6 +13,21 @@ class Date(BaseModel):
     month: int
     year: int
 
+    @classmethod
+    def from_date_object(cls, date: datetime.date) -> Self:
+        return cls(
+            day=date.day,
+            month=date.month,
+            year=date.year,
+        )
+
+    def to_date_object(self) -> datetime.date:
+        return datetime.date(
+            year=self.year,
+            month=self.month,
+            day=self.day,
+        )
+
 
 class QueryData(BaseModel):
     start: Date

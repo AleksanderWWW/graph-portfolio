@@ -38,8 +38,12 @@ class PrometheusLogger(ls.Logger):
         )
 
     def process(self, key, value):
-        print("processing", key, value)
         self.function_duration.labels(function_name=key).observe(value)
+
+
+class StdOutLogger(ls.Logger):
+    def process(self, key, value):
+        print("[LOG] ", key, value)
 
 
 class GraphPortfolioAPI(ls.LitAPI):
@@ -80,15 +84,15 @@ class GraphPortfolioAPI(ls.LitAPI):
 
 
 if __name__ == "__main__":
-    logger: ls.Logger | None = None
+    loggers: list[ls.Logger] = [StdOutLogger()]
 
     if CONFIG.ENABLE_PROMETHEUS:
         prometheus_logger = PrometheusLogger()
         prometheus_logger.mount(path="/metrics", app=make_asgi_app(registry=registry))
 
-        logger = prometheus_logger
+        loggers.append(prometheus_logger)
 
     api = GraphPortfolioAPI()
 
-    server = ls.LitServer(api, track_requests=True, loggers=logger)
+    server = ls.LitServer(api, track_requests=True, loggers=loggers)
     server.run(port=8000)
