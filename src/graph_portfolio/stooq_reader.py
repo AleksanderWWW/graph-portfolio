@@ -9,7 +9,6 @@ from typing import Final
 import aiohttp
 import pandas as pd
 
-from graph_portfolio.schema import Date
 from graph_portfolio.utils import URLComponents
 from graph_portfolio.exceptions import DataNotFound
 from graph_portfolio.config import CONFIG
@@ -32,19 +31,9 @@ INDEX_COLUMN_NAME: Final[str] = "Data"
 RETURN_COLUMNS_NAME: Final[str] = "Zamkniecie"
 
 
-def read_stooq(
-    tickers: frozenset[str], *, start_date: Date, end_date: Date
-) -> pd.DataFrame:
-    return read_stooq_cached(
-        tickers,
-        start_date.to_date_object(),
-        end_date.to_date_object(),
-    )
-
-
 @lru_cache
-def read_stooq_cached(
-    tickers: frozenset[str], start_date: datetime.date, end_date: datetime.date
+def read_stooq(
+    tickers: frozenset[str], *, start_date: datetime.date, end_date: datetime.date
 ) -> pd.DataFrame:
     return asyncio.run(
         read_stooq_data(list(tickers), start_date=start_date, end_date=end_date)

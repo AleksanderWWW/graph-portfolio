@@ -58,8 +58,8 @@ class GraphPortfolioAPI(ls.LitAPI):
         try:
             data = read_stooq(
                 tickers=resolve_tickers(query.tickers),
-                start_date=query.start,
-                end_date=query.end,
+                start_date=query.start.to_date_object(),
+                end_date=query.end.to_date_object(),
             )
         except DataNotFound as not_found_exc:
             raise HTTPException(404, detail=not_found_exc.msg)
@@ -73,7 +73,7 @@ class GraphPortfolioAPI(ls.LitAPI):
         except Exception as exc:
             raise HTTPException(500, detail=str(exc))
 
-        self.log("predict", time.time() - start)
+        self.log("predict_time", time.time() - start)
         return Result(
             tickers=portfolio_data.assets,
             is_independent_set=portfolio_data.is_independent_set,
