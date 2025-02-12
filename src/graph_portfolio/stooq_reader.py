@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 from enum import Enum
+from functools import lru_cache
 from io import StringIO
 from urllib.parse import urlencode, urlunparse
 from typing import Final
@@ -8,7 +9,6 @@ from typing import Final
 import aiohttp
 import pandas as pd
 
-from graph_portfolio.schema import Date
 from graph_portfolio.utils import URLComponents
 from graph_portfolio.exceptions import DataNotFound
 from graph_portfolio.config import CONFIG
@@ -31,21 +31,12 @@ INDEX_COLUMN_NAME: Final[str] = "Data"
 RETURN_COLUMNS_NAME: Final[str] = "Zamkniecie"
 
 
-def read_stooq(tickers: list[str], *, start_date: Date, end_date: Date) -> pd.DataFrame:
+@lru_cache
+def read_stooq(
+    tickers: frozenset[str], *, start_date: datetime.date, end_date: datetime.date
+) -> pd.DataFrame:
     return asyncio.run(
-        read_stooq_data(
-            tickers,
-            start_date=datetime.date(
-                year=start_date.year,
-                month=start_date.month,
-                day=start_date.day,
-            ),
-            end_date=datetime.date(
-                year=end_date.year,
-                month=end_date.month,
-                day=end_date.day,
-            ),
-        )
+        read_stooq_data(list(tickers), start_date=start_date, end_date=end_date)
     )
 
 

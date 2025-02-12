@@ -38,8 +38,12 @@ class PrometheusLogger(ls.Logger):
         )
 
     def process(self, key, value):
-        print("processing", key, value)
         self.function_duration.labels(function_name=key).observe(value)
+
+
+class StdOutLogger(ls.Logger):
+    def process(self, key, value):
+        print("[LOG] ", key, value)
 
 
 class GraphPortfolioAPI(ls.LitAPI):
@@ -54,8 +58,8 @@ class GraphPortfolioAPI(ls.LitAPI):
         try:
             data = read_stooq(
                 tickers=resolve_tickers(query.tickers),
-                start_date=query.start,
-                end_date=query.end,
+                start_date=query.start.to_date_object(),
+                end_date=query.end.to_date_object(),
             )
         except DataNotFound as not_found_exc:
             raise HTTPException(404, detail=not_found_exc.msg)
@@ -69,7 +73,7 @@ class GraphPortfolioAPI(ls.LitAPI):
         except Exception as exc:
             raise HTTPException(500, detail=str(exc))
 
-        self.log("predict", time.time() - start)
+        self.log("predict_time", time.time() - start)
         return Result(
             tickers=portfolio_data.assets,
             is_independent_set=portfolio_data.is_independent_set,
@@ -80,15 +84,15 @@ class GraphPortfolioAPI(ls.LitAPI):
 
 
 if __name__ == "__main__":
-    logger: ls.Logger | None = None
+    loggers: list[ls.Logger] = [StdOutLogger()]
 
     if CONFIG.ENABLE_PROMETHEUS:
         prometheus_logger = PrometheusLogger()
         prometheus_logger.mount(path="/metrics", app=make_asgi_app(registry=registry))
 
-        logger = prometheus_logger
+        loggers.append(prometheus_logger)
 
     api = GraphPortfolioAPI()
 
-    server = ls.LitServer(api, track_requests=True, loggers=logger)
+    server = ls.LitServer(api, track_requests=True, loggers=loggers)
     server.run(port=8000)

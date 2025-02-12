@@ -16,7 +16,7 @@ TEXT_IN_INVALID_RESPONSE: Final[str] = "Błąd 404"
 COLUMN_WITH_TICKER_NAMES: Final[str] = "Profil"
 
 
-def resolve_tickers(tickers: list[str]) -> list[str]:
+def resolve_tickers(tickers: list[str]) -> frozenset[str]:
     resolved_tickers = []
 
     for ticker in tickers:
@@ -33,7 +33,7 @@ def resolve_tickers(tickers: list[str]) -> list[str]:
             case _:
                 raise ValueError(f"Invalid item in the ticker list: {ticker}")
 
-    return list(set(resolved_tickers))
+    return frozenset(resolved_tickers)
 
 
 def get_index_components(index: str, *, expected_len: int | None = None) -> list[str]:
