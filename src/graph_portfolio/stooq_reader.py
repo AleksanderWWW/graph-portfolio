@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import os
 from enum import Enum
 from io import StringIO
 from urllib.parse import urlencode, urlunparse
@@ -12,6 +11,7 @@ import pandas as pd
 from graph_portfolio.schema import Date
 from graph_portfolio.utils import URLComponents
 from graph_portfolio.exceptions import DataNotFound
+from graph_portfolio.config import CONFIG
 
 
 class StooqDataInterval(Enum):
@@ -57,7 +57,7 @@ async def read_stooq_data(
     query_params = {
         "d1": start_date.strftime(DATE_FORMAT),
         "d2": end_date.strftime(DATE_FORMAT),
-        "i": StooqDataInterval[os.getenv("STOOQ_DATA_INTERVAL", "DAILY")].value,
+        "i": StooqDataInterval[CONFIG.STOOQ_INTERVAL].value,
     }
 
     urls = [
@@ -73,8 +73,9 @@ async def read_stooq_data(
         )
         for ticker in tickers
     ]
-    batch_size = 10
-    delay = 2
+    batch_size = CONFIG.STOOQ_FETCH_BATCH_SIZE
+    delay = CONFIG.STOOQ_FETCH_DELAY_SECONDS
+
     async with aiohttp.ClientSession() as session:
         results = []
 
