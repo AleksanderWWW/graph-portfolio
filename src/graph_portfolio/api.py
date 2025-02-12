@@ -12,6 +12,7 @@ from graph_portfolio.schema import QueryData, RequestData, ResponseData, Result
 from graph_portfolio.stooq_reader import read_stooq
 from graph_portfolio.index_component_reader import resolve_tickers
 from graph_portfolio.exceptions import DataNotFound
+from graph_portfolio.config import CONFIG
 
 
 # Set the directory for multiprocess mode
@@ -81,7 +82,7 @@ class GraphPortfolioAPI(ls.LitAPI):
 if __name__ == "__main__":
     logger: ls.Logger | None = None
 
-    if os.getenv("ENABLE_PROMETHEUS", "false")[0].lower() in ("t", "1", "y"):
+    if CONFIG.ENABLE_PROMETHEUS:
         prometheus_logger = PrometheusLogger()
         prometheus_logger.mount(path="/metrics", app=make_asgi_app(registry=registry))
 
