@@ -6,8 +6,8 @@ from graph_portfolio.schema import (
     Date,
     QueryData,
     RequestData,
-    Result,
     ResponseData,
+    Result,
 )
 
 

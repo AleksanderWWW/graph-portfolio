@@ -3,10 +3,10 @@ import pandas as pd
 import pytest
 
 from graph_portfolio.graph import (
-    get_max_diversified_portfolio,
-    get_corr_matrix,
-    is_independent_set,
     build_graph,
+    get_corr_matrix,
+    get_max_diversified_portfolio,
+    is_independent_set,
 )
 
 

@@ -1,7 +1,7 @@
 from typing import Any
 
-import pytest
 import pandas as pd
+import pytest
 
 
 @pytest.fixture(scope="session")
