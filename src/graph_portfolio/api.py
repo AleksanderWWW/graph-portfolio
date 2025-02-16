@@ -4,16 +4,14 @@ from typing import Any
 
 import litserve as ls
 from fastapi import HTTPException
+from prometheus_client import CollectorRegistry, Histogram, make_asgi_app, multiprocess
 
-from prometheus_client import Histogram, CollectorRegistry, multiprocess, make_asgi_app
-
+from graph_portfolio.config import CONFIG
+from graph_portfolio.exceptions import DataNotFound
 from graph_portfolio.graph import get_max_diversified_portfolio
+from graph_portfolio.index_component_reader import resolve_tickers
 from graph_portfolio.schema import QueryData, RequestData, ResponseData, Result
 from graph_portfolio.stooq_reader import read_stooq
-from graph_portfolio.index_component_reader import resolve_tickers
-from graph_portfolio.exceptions import DataNotFound
-from graph_portfolio.config import CONFIG
-
 
 # Set the directory for multiprocess mode
 os.environ["PROMETHEUS_MULTIPROC_DIR"] = "/tmp/prometheus_multiproc_dir"

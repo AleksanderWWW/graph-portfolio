@@ -3,15 +3,15 @@ import datetime
 from enum import Enum
 from functools import lru_cache
 from io import StringIO
-from urllib.parse import urlencode, urlunparse
 from typing import Final
+from urllib.parse import urlencode, urlunparse
 
 import aiohttp
 import pandas as pd
 
-from graph_portfolio.utils import URLComponents
-from graph_portfolio.exceptions import DataNotFound
 from graph_portfolio.config import CONFIG
+from graph_portfolio.exceptions import DataNotFound
+from graph_portfolio.utils import URLComponents
 
 
 class StooqDataInterval(Enum):

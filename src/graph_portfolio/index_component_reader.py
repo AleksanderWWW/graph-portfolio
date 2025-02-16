@@ -2,12 +2,10 @@ import warnings
 from io import StringIO
 from typing import Final
 
+import pandas as pd
 import requests
 
-import pandas as pd
-
 from graph_portfolio.exceptions import DataNotFound
-
 
 URL: Final[str] = "https://www.biznesradar.pl/gielda/indeks:{index}"
 
