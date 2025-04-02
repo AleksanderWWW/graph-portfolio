@@ -39,33 +39,38 @@ def fetch_data(stocks):
     else:
         return pd.DataFrame()  # Return empty DataFrame if no data
 
+def run_data_delivery():
+    # Fetch all components from Wikipedia list
+    stocks = fetch_components()
+    
+    # Begin storing data by the remainder from division by 10 of the list
+    stocks_init = stocks[(len(stocks) - len(stocks) % 10) : len(stocks)]
+    data_full = fetch_data(stocks_init)
+    
+    # Remove MultiIndex to melt the data
+    data_full.columns = data_full.columns.droplevel(1)
+    # Melt the data for all observations
+    data_full = pd.melt(data_full, id_vars=["Date", "Stock"], value_vars=["Close", "Open"])
+    # Drop artificial NaNs
+    data_full = data_full.dropna(how="any")
+    
+    # Download the data in batches of 10 stocks, repeat all the steps from initial download
+    
+    for num in range(1, int(len(stocks) / 10 + 1)):
+        stocks_batch = stocks[((num - 1) * 10) : (num * 10)]
+        data_batch = fetch_data(stocks_batch)
+        data_batch.columns = data_batch.columns.droplevel(1)
+        data_batch = pd.melt(
+            data_batch, id_vars=["Date", "Stock"], value_vars=["Close", "Open"]
+        )
+        data_batch = data_batch.dropna(how="any")
+        data_full = pd.concat([data_full, data_batch], ignore_index=True)
+    
+    # Sort the output
+    data_full = data_full.sort_values("Stock")
+    data_full.to_csv("output.csv", index=False)
+    return data_full
 
-# Fetch all components from Wikipedia list
-stocks = fetch_components()
-
-# Begin storing data by the remainder from division by 10 of the list
-stocks_init = stocks[(len(stocks) - len(stocks) % 10) : len(stocks)]
-data_full = fetch_data(stocks_init)
-
-# Remove MultiIndex to melt the data
-data_full.columns = data_full.columns.droplevel(1)
-# Melt the data for all observations
-data_full = pd.melt(data_full, id_vars=["Date", "Stock"], value_vars=["Close", "Open"])
-# Drop artificial NaNs
-data_full = data_full.dropna(how="any")
-
-# Download the data in batches of 10 stocks, repeat all the steps from initial download
-
-for num in range(1, int(len(stocks) / 10 + 1)):
-    stocks_batch = stocks[((num - 1) * 10) : (num * 10)]
-    data_batch = fetch_data(stocks_batch)
-    data_batch.columns = data_batch.columns.droplevel(1)
-    data_batch = pd.melt(
-        data_batch, id_vars=["Date", "Stock"], value_vars=["Close", "Open"]
-    )
-    data_batch = data_batch.dropna(how="any")
-    data_full = pd.concat([data_full, data_batch], ignore_index=True)
-
-# Sort the output
-data_full = data_full.sort_values("Stock")
-data_full.to_csv("output.csv", index=False)
+if __name__ == "__main__":
+    run_data_delivery()
+    print("Data delivery completed.")
